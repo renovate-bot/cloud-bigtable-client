@@ -31,7 +31,9 @@ import com.google.bigtable.v2.ReadRowsResponse.CellChunk;
 import com.google.bigtable.v2.ReadRowsResponse.CellChunk.RowStatusCase;
 import com.google.bigtable.v2.RowFilter.Interleave;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;
 
 import io.grpc.stub.StreamObserver;
@@ -392,6 +394,10 @@ protected static final Logger LOG = new Logger(RowMerger.class);
   private boolean complete = false;
   private Integer rowCountInLastMessage = null;
 
+  // TODO(igorbernstein): remove debug logic
+  private EvictingQueue<ByteString> debugLastKeys = EvictingQueue.create(10);
+  // end debug logic
+
   /**
    * <p>Constructor for RowMerger.</p>
    *
@@ -408,6 +414,45 @@ protected static final Logger LOG = new Logger(RowMerger.class);
     rowCountInLastMessage = null;
   }
 
+
+  private void logNewRowStart(CellChunk chunk) {
+    if (state != RowMergerState.NewRow) {
+      return;
+    }
+
+    try {
+      // Store a copy of the key. This will be used to debug row ordering issues below
+      ByteString newKey = ByteString.readFrom(chunk.getRowKey().newInput());
+      debugLastKeys.add(newKey);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+
+  private void logInvalidChunk() {
+    List<ByteString> lastKeysList = Lists.newArrayList(debugLastKeys);
+    if (lastKeysList.isEmpty()) {
+      LOG.error("debugLastKeys is empty!");
+      return;
+    }
+    ByteString expectedLastKey = lastKeysList.get(lastKeysList.size() - 1);
+    ByteString actualLastKey = lastCompletedRowKey;
+
+    if (!expectedLastKey.equals(actualLastKey)) {
+      if (actualLastKey == null) {
+        LOG.error("lastCompletedRowKey  is null!");
+      } else {
+        LOG.error("the lastCompletedRowKey unexpectedly changed! expected: %s, actual: %s",
+            expectedLastKey.toStringUtf8(), actualLastKey.toStringUtf8());
+      }
+    }
+
+    LOG.error("dumping last seen keys:");
+    for (ByteString key : debugLastKeys) {
+      LOG.error(key.toStringUtf8());
+    }
+  }
+
   /** {@inheritDoc} */
   @Override
   public final void onNext(ReadRowsResponse readRowsResponse) {
@@ -419,7 +464,15 @@ protected static final Logger LOG = new Logger(RowMerger.class);
     for (int i = 0; i < readRowsResponse.getChunksCount(); i++) {
       try {
         CellChunk chunk = readRowsResponse.getChunks(i);
-        state.validateChunk(rowInProgress, lastCompletedRowKey, chunk);
+
+        logNewRowStart(chunk);
+
+        try {
+          state.validateChunk(rowInProgress, lastCompletedRowKey, chunk);
+        } catch (IllegalArgumentException e) {
+          logInvalidChunk();
+          throw e;
+        }
         if (chunk.getResetRow()) {
           rowInProgress = null;
           state = RowMergerState.NewRow;
