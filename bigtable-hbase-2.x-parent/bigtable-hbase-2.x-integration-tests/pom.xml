@@ -226,7 +226,7 @@ limitations under the License.
         <dependency>
           <groupId>org.apache.hbase.thirdparty</groupId>
           <artifactId>hbase-shaded-protobuf</artifactId>
-          <version>4.1.4</version>
+          <version>4.1.12</version>
         </dependency>
 
         <dependency>
