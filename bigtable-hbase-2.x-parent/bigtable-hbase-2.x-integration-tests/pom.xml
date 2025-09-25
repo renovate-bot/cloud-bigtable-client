@@ -578,7 +578,7 @@ limitations under the License.
           <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.5</version>
           </dependency>
 
           <!-- minicluster has a hard undeclared  dependency on log4j 1 via hadoop, reroute it to slf4j -->

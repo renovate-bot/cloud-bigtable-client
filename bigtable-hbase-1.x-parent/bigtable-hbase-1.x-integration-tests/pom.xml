@@ -264,7 +264,7 @@ limitations under the License.
         <dependency>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
-          <version>1.3.0</version>
+          <version>1.3.5</version>
         </dependency>
         <!-- HRegionInfo.createRegionName() uses Hex to encode the md5 hash of the name -->
         <dependency>
@@ -611,7 +611,7 @@ limitations under the License.
           <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.5</version>
           </dependency>
           <!-- Force log4j messages -> slf4j -> maven's simplelogger -->
           <dependency>
