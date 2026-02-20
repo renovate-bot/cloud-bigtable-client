@@ -82,7 +82,7 @@ limitations under the License.
     <mockito.version>4.11.0</mockito.version>
     <beam.version>2.67.0</beam.version>
     <!-- referred from bigtable-beam-import and bigtable-emulator -->
-    <guava.version>33.4.0-jre</guava.version>
+    <guava.version>33.5.0-jre</guava.version>
     <opencensus.version>0.31.1</opencensus.version>
 
     <!-- Enable the ability to skip unit tests and only run integration tests,
