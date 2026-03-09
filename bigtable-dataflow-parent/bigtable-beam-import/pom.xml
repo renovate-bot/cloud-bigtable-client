@@ -27,7 +27,7 @@ limitations under the License.
 
   <properties>
     <mainClass>com.google.cloud.bigtable.beam.Main</mainClass>
-    <hadoop.version>3.3.5</hadoop.version>
+    <hadoop.version>3.4.3</hadoop.version>
   </properties>
 
   <dependencyManagement>
