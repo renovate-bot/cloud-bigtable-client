@@ -62,7 +62,7 @@ limitations under the License.
     <dropwizard-metrics.version>4.2.22</dropwizard-metrics.version>
 
     <!--  keeping at this version to align with hbase-->
-    <reload4j.version>1.2.24</reload4j.version>
+    <reload4j.version>1.2.26</reload4j.version>
 
     <!-- hbase dependency versions -->
     <hbase1.version>1.7.2</hbase1.version>
