@@ -59,7 +59,7 @@ limitations under the License.
     <google-cloud-bigtable-emulator.version>0.218.0</google-cloud-bigtable-emulator.version>
     <bigtable-metrics-api.version>1.29.2</bigtable-metrics-api.version>
     <!-- Optional dep for bigtable-metrics-api used for tests -->
-    <dropwizard-metrics.version>4.2.22</dropwizard-metrics.version>
+    <dropwizard-metrics.version>4.2.40</dropwizard-metrics.version>
 
     <!-- shared library versions pulled in by the bigtable veneer; pinned to satisfy
          RequireUpperBoundDeps (slf4j) and to match the google-cloud-bigtable deps-bom (conscrypt) -->
